@@ -1,9 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-type Props = {};
-
-const Page = ({}: Props) => {
+const Page = () => {
   return (
     <div>
       <Image src="/logo.svg" width={50} height={50} alt="logo" />
