@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useAuth, useClerk } from "@clerk/nextjs";
 import { FlameIcon, HomeIcon, PlaySquareIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -16,12 +17,12 @@ const items = [
     title: "Home",
     url: "/",
     icon: HomeIcon,
-    auth: true,
   },
   {
     title: "Subscriptions",
     url: "/feed/subscriptions",
     icon: PlaySquareIcon,
+    auth: true,
   },
   {
     title: "Trending",
@@ -31,6 +32,9 @@ const items = [
 ];
 
 const MainSection = () => {
+  const { userId, isSignedIn } = useAuth();
+  const clerk = useClerk();
+
   return (
     <SidebarGroup>
       <SidebarGroupContent>
@@ -41,7 +45,12 @@ const MainSection = () => {
                 tooltip={item.title}
                 asChild
                 isActive={false} // TODO: change to look at current pathname
-                onClick={() => {}} //TODO: do something on click
+                onClick={(e) => {
+                  if (!isSignedIn && item.auth) {
+                    e.preventDefault();
+                    return clerk.openSignIn();
+                  }
+                }}
               >
                 <Link href={item.url} className="flex items-center gap-4">
                   <item.icon />
